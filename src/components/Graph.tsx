@@ -41,7 +41,6 @@ function Graph({ client }: GraphProps) {
       }
     })
     setData(mapped_rows)
-    console.log(data)
   };
 
   return (
@@ -65,7 +64,6 @@ function Graph({ client }: GraphProps) {
           stroke="#8884d8"
           activeDot={{ r: 8 }}
         />
-        <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
       </LineChart>
       <button onClick={fetchData}>Fetch Data</button>
     </>
