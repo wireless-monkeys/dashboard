@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+cd -- "$( dirname -- "${BASH_SOURCE[0]}" )"
+
+OUT_DIR="./src/generated"
+
+rm -rf ${OUT_DIR}
+mkdir -p ${OUT_DIR}
+
+protoc --ts_out ${OUT_DIR} --proto_path proto proto/dashboard-service.proto

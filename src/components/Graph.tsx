@@ -1,30 +1,75 @@
-import { LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } from 'recharts'
+import { DashboardServiceClient } from "../generated/dashboard-service.client";
+import { GetNumberOfPeopleRequest, GetNumberOfPeopleResponse, NumberOfPeopleRow } from "../generated/dashboard-service";
+import {
+  LineChart,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  Line,
+} from "recharts";
+import { useEffect, useState } from "react";
 
-function Graph() {
-    const data = [
-        { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
-        { name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
-        { name: 'Page C', uv: 2000, pv: 9800, amt: 2290 },
-        { name: 'Page D', uv: 2780, pv: 3908, amt: 2000 },
-        { name: 'Page E', uv: 1890, pv: 4800, amt: 2181 },
-        { name: 'Page F', uv: 2390, pv: 3800, amt: 2500 },
-        { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
-    ]
-
-    return (
-        <LineChart 
-            width={1000}
-            height={500}
-            data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-          <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-        </LineChart>
-    )
+interface GraphProps {
+  client: DashboardServiceClient;
 }
 
-export default Graph
+interface ChartData {
+  timestamp: Number;
+  numberOfPeople: Number;
+}
+
+function Graph({ client }: GraphProps) {
+  const [data, setData] = useState<ChartData[]>([])
+
+  const fetchData = async () => {
+    const req: GetNumberOfPeopleRequest = {
+      startTime: {
+        seconds: BigInt(0),
+        nanos: 0,
+      },
+      endTime: {
+        seconds: BigInt(2000000000),
+        nanos: 0,
+      },
+    };
+    const { response } = await client.getNumberOfPeople(req);
+    const mapped_rows = response.rows.map(({timestamp, numberOfPeople}) => {
+      return {
+        timestamp: Number(timestamp!.seconds * 1000n),
+        numberOfPeople: Number(numberOfPeople!),
+      }
+    })
+    setData(mapped_rows)
+    console.log(data)
+  };
+
+  return (
+    <>
+      <LineChart width={1000} height={500} data={data}>
+        <XAxis
+          dataKey="timestamp"
+          domain = {['auto', 'auto']}
+          tickFormatter={(unixTime) => {
+            const datetime = new Date(unixTime);
+            return `${datetime.toLocaleDateString()} ${datetime.toLocaleTimeString()}`;
+          }}
+          type="number"
+        />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Line
+          type="monotone"
+          dataKey="numberOfPeople"
+          stroke="#8884d8"
+          activeDot={{ r: 8 }}
+        />
+        <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+      </LineChart>
+      <button onClick={fetchData}>Fetch Data</button>
+    </>
+  );
+}
+
+export default Graph;
