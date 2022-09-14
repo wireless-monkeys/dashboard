@@ -1,6 +1,6 @@
 import { DashboardServiceClient } from '../generated/dashboard-service.client'
 import { GetNumberOfPeopleRequest } from '../generated/dashboard-service'
-import { formatRFC7231 } from 'date-fns'
+import { formatRFC7231, formatISO9075 } from 'date-fns'
 import { LineChart, XAxis, YAxis, Tooltip, Legend, Line } from 'recharts'
 import { useEffect, useState } from 'react'
 import { ImSpinner2 } from 'react-icons/im'
@@ -120,9 +120,11 @@ function Graph({ client }: GraphProps) {
             domain={domain}
             tickFormatter={(unixTime) => {
               const datetime = new Date(unixTime)
-              return `${datetime.toLocaleDateString()} ${datetime.toLocaleTimeString()}`
+              if (isNaN(datetime.getTime())) {
+                return ''
+              }
+              return formatISO9075(datetime)
             }}
-            tickCount={10}
             type="number"
           />
           <YAxis />
