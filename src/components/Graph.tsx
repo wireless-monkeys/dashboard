@@ -10,6 +10,8 @@ import {
   CartesianGrid,
 } from 'recharts'
 import { useEffect, useState } from 'react'
+import { ImSpinner2 } from 'react-icons/im'
+import { IoRefresh } from 'react-icons/io5'
 import { Timestamp } from '../generated/google/protobuf/timestamp'
 import GraphIntervalButtonGroup from './GraphIntervalButtonGroup'
 
@@ -35,18 +37,25 @@ type fetchDataParamsAbsolute = {
 export type fetchDataParams = fetchDataParamsRelative | fetchDataParamsAbsolute
 
 function Graph({ client }: GraphProps) {
+  const [loading, setLoading] = useState(true)
   const [data, setData] = useState<ChartData[]>([])
   const [domain, setDomain] = useState<[number | string, number | string]>([
     'auto',
     'auto',
   ])
   const [activeButton, setActiveButton] = useState(0)
+  const [latestParams, setLatestParams] = useState<fetchDataParams>({
+    relative: true,
+    interval: 60 * 60 * 1000,
+    index: 0,
+  })
 
   useEffect(() => {
-    fetchData({ relative: true, interval: 60 * 60 * 1000, index: 0 })
+    fetchData(latestParams)
   }, [])
 
   const fetchData = async (param: fetchDataParams) => {
+    setLoading(true)
     let req: GetNumberOfPeopleRequest
     if (param.relative) {
       const now = new Date()
@@ -62,7 +71,6 @@ function Graph({ client }: GraphProps) {
         endTime: Timestamp.fromDate(param.endTime),
       }
     }
-    console.log(req.startTime, req.endTime)
     const { response } = await client.getNumberOfPeople(req)
     const mapped_rows = response.rows.map(({ timestamp, numberOfPeople }) => {
       return {
@@ -81,30 +89,55 @@ function Graph({ client }: GraphProps) {
       ])
     }
     setData(mapped_rows)
+    setLatestParams(param)
+    setLoading(false)
   }
 
   return (
-    <div className="flex flex-col items-center gap-5">
-      <LineChart width={1000} height={500} data={data}>
-        <XAxis
-          dataKey="timestamp"
-          domain={domain}
-          tickFormatter={(unixTime) => {
-            const datetime = new Date(unixTime)
-            return `${datetime.toLocaleDateString()} ${datetime.toLocaleTimeString()}`
-          }}
-          tickCount={10}
-          type="number"
+    <div className="flex flex-col items-center">
+      <div className="flex flex-row gap-2 self-end">
+        <GraphIntervalButtonGroup
+          fetchData={fetchData}
+          activeButton={activeButton}
         />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Line type="monotone" dataKey="numberOfPeople" stroke="#8884d8" />
-      </LineChart>
-      <GraphIntervalButtonGroup
-        fetchData={fetchData}
-        activeButton={activeButton}
-      />
+        <button
+          className="btn"
+          onClick={() => {
+            fetchData(latestParams)
+          }}>
+          <IoRefresh />
+        </button>
+      </div>
+      <div className="grid justify-items-center items-center">
+        {loading ? (
+          <ImSpinner2
+            className="animate-spin row-start-1 col-start-1"
+            size={50}
+          />
+        ) : null}
+        <LineChart
+          className={`row-start-1 col-start-1 margin-0 ${
+            loading ? 'opacity-50' : ''
+          }`}
+          width={1000}
+          height={500}
+          data={data}>
+          <XAxis
+            dataKey="timestamp"
+            domain={domain}
+            tickFormatter={(unixTime) => {
+              const datetime = new Date(unixTime)
+              return `${datetime.toLocaleDateString()} ${datetime.toLocaleTimeString()}`
+            }}
+            tickCount={10}
+            type="number"
+          />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="numberOfPeople" stroke="#8884d8" />
+        </LineChart>
+      </div>
     </div>
   )
 }

@@ -9,7 +9,7 @@ function App() {
   })
   const client = new DashboardServiceClient(transport)
   return (
-    <div className="w-screen m-4 flex flex-col items-center gap-7">
+    <div className="w-screen flex flex-col items-center gap-10 p-10">
       <h1 className="text-6xl font-bold">Dashboard</h1>
       <Graph client={client} />
     </div>
