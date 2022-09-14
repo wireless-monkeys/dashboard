@@ -29,13 +29,13 @@ type fetchDataParamsAbsolute = {
 }
 export type fetchDataParams = fetchDataParamsRelative | fetchDataParamsAbsolute
 
+type AxisDomain = [number | string, number | string]
+
 function Graph({ client }: GraphProps) {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<ChartData[]>([])
-  const [domain, setDomain] = useState<[number | string, number | string]>([
-    'auto',
-    'auto',
-  ])
+  const [xdomain, setXDomain] = useState<AxisDomain>(['auto', 'auto'])
+  const [ydomain, setYDomain] = useState<AxisDomain>(['auto', 'auto'])
   const [activeButton, setActiveButton] = useState(0)
   const [latestParams, setLatestParams] = useState<fetchDataParams>({
     relative: true,
@@ -74,12 +74,18 @@ function Graph({ client }: GraphProps) {
       }
     })
     if (req.startTime!.seconds === 0n) {
-      setDomain(['auto', 'auto'])
+      setXDomain(['auto', 'auto'])
     } else {
-      setDomain([
+      setXDomain([
         Timestamp.toDate(req.startTime!).getTime(),
         Timestamp.toDate(req.endTime!).getTime(),
       ])
+    }
+    const max_y = Math.max(...mapped_rows.map((row) => row.numberOfPeople))
+    if (max_y < 20) {
+      setYDomain([0, 10])
+    } else {
+      setYDomain([0, 'auto'])
     }
     setData(mapped_rows)
     setLatestParams(param)
@@ -117,7 +123,7 @@ function Graph({ client }: GraphProps) {
           data={data}>
           <XAxis
             dataKey="timestamp"
-            domain={domain}
+            domain={xdomain}
             tickFormatter={(unixTime) => {
               const datetime = new Date(unixTime)
               if (isNaN(datetime.getTime())) {
@@ -127,7 +133,7 @@ function Graph({ client }: GraphProps) {
             }}
             type="number"
           />
-          <YAxis />
+          <YAxis domain={ydomain} />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
           <Line
