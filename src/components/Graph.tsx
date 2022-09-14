@@ -135,7 +135,7 @@ function Graph({ client }: GraphProps) {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="numberOfPeople" stroke="#8884d8" />
+          <Line type="linear" dataKey="numberOfPeople" stroke="#8884d8" />
         </LineChart>
       </div>
     </div>
