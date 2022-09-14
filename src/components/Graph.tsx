@@ -130,7 +130,12 @@ function Graph({ client }: GraphProps) {
           <YAxis />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
-          <Line type="linear" dataKey="numberOfPeople" stroke="#8884d8" />
+          <Line
+            name="Number of people"
+            type="linear"
+            dataKey="numberOfPeople"
+            stroke="#8884d8"
+          />
         </LineChart>
       </div>
     </div>
