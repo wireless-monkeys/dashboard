@@ -1,14 +1,7 @@
 import { DashboardServiceClient } from '../generated/dashboard-service.client'
 import { GetNumberOfPeopleRequest } from '../generated/dashboard-service'
-import {
-  LineChart,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  Line,
-  CartesianGrid,
-} from 'recharts'
+import { formatRFC7231 } from 'date-fns'
+import { LineChart, XAxis, YAxis, Tooltip, Legend, Line } from 'recharts'
 import { useEffect, useState } from 'react'
 import { ImSpinner2 } from 'react-icons/im'
 import { IoRefresh } from 'react-icons/io5'
@@ -133,13 +126,29 @@ function Graph({ client }: GraphProps) {
             type="number"
           />
           <YAxis />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
           <Legend />
           <Line type="linear" dataKey="numberOfPeople" stroke="#8884d8" />
         </LineChart>
       </div>
     </div>
   )
+}
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const { numberOfPeople, timestamp } = payload[0].payload
+    const datetime = new Date(timestamp)
+    return (
+      <div className="card bg-base-100">
+        <div className="card-body items-center text-center">
+          <p>{formatRFC7231(datetime)}</p>
+          <p className="text-primary">{`People: ${numberOfPeople}`}</p>
+        </div>
+      </div>
+    )
+  }
+  return null
 }
 
 export default Graph
