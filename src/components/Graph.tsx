@@ -1,4 +1,3 @@
-import { DashboardServiceClient } from '../generated/dashboard-service.client'
 import { GetNumberOfPeopleRequest } from '../generated/dashboard-service'
 import { formatRFC7231, formatISO9075 } from 'date-fns'
 import { LineChart, XAxis, YAxis, Tooltip, Legend, Line } from 'recharts'
@@ -7,10 +6,7 @@ import { ImSpinner2 } from 'react-icons/im'
 import { IoRefresh } from 'react-icons/io5'
 import { Timestamp } from '../generated/google/protobuf/timestamp'
 import GraphIntervalButtonGroup from './GraphIntervalButtonGroup'
-
-interface GraphProps {
-  client: DashboardServiceClient
-}
+import { client } from '../client'
 
 interface ChartData {
   timestamp: Number
@@ -31,7 +27,7 @@ export type fetchDataParams = fetchDataParamsRelative | fetchDataParamsAbsolute
 
 type AxisDomain = [number | string, number | string]
 
-function Graph({ client }: GraphProps) {
+function Graph() {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<ChartData[]>([])
   const [xdomain, setXDomain] = useState<AxisDomain>(['auto', 'auto'])
