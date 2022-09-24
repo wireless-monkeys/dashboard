@@ -52,12 +52,14 @@ function Graph() {
       req = {
         startTime: Timestamp.fromDate(startTime),
         endTime: Timestamp.fromDate(now),
+        intervalMinutes: 1,
       }
       setActiveButton(param.index)
     } else {
       req = {
         startTime: Timestamp.fromDate(param.startTime),
         endTime: Timestamp.fromDate(param.endTime),
+        intervalMinutes: 1,
       }
     }
     const { response } = await client.getNumberOfPeople(req)

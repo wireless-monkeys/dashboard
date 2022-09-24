@@ -4,6 +4,9 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { DashboardService } from "./dashboard-service";
+import type { CameraResponse } from "./dashboard-service";
+import type { Empty } from "./utils";
+import type { ServerStreamingCall } from "@protobuf-ts/runtime-rpc";
 import { stackIntercept } from "@protobuf-ts/runtime-rpc";
 import type { GetNumberOfPeopleResponse } from "./dashboard-service";
 import type { GetNumberOfPeopleRequest } from "./dashboard-service";
@@ -17,6 +20,10 @@ export interface IDashboardServiceClient {
      * @generated from protobuf rpc: GetNumberOfPeople(api.GetNumberOfPeopleRequest) returns (api.GetNumberOfPeopleResponse);
      */
     getNumberOfPeople(input: GetNumberOfPeopleRequest, options?: RpcOptions): UnaryCall<GetNumberOfPeopleRequest, GetNumberOfPeopleResponse>;
+    /**
+     * @generated from protobuf rpc: SubscribeCamera(api.Empty) returns (stream api.CameraResponse);
+     */
+    subscribeCamera(input: Empty, options?: RpcOptions): ServerStreamingCall<Empty, CameraResponse>;
 }
 /**
  * @generated from protobuf service api.DashboardService
@@ -33,5 +40,12 @@ export class DashboardServiceClient implements IDashboardServiceClient, ServiceI
     getNumberOfPeople(input: GetNumberOfPeopleRequest, options?: RpcOptions): UnaryCall<GetNumberOfPeopleRequest, GetNumberOfPeopleResponse> {
         const method = this.methods[0], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetNumberOfPeopleRequest, GetNumberOfPeopleResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: SubscribeCamera(api.Empty) returns (stream api.CameraResponse);
+     */
+    subscribeCamera(input: Empty, options?: RpcOptions): ServerStreamingCall<Empty, CameraResponse> {
+        const method = this.methods[1], opt = this._transport.mergeOptions(options);
+        return stackIntercept<Empty, CameraResponse>("serverStreaming", this._transport, method, opt, input);
     }
 }

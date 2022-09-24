@@ -7,4 +7,4 @@ OUT_DIR="./src/generated"
 rm -rf ${OUT_DIR}
 mkdir -p ${OUT_DIR}
 
-protoc --ts_out ${OUT_DIR} --proto_path proto proto/dashboard-service.proto
+npx protoc --ts_out ${OUT_DIR} --proto_path proto proto/*.proto
