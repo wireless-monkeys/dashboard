@@ -6,6 +6,7 @@ const hour = 60 * minute
 const day = 24 * hour
 
 interface GraphIntervalButtonGroupProps {
+  latestParams: fetchDataParams
   fetchData: (param: fetchDataParams) => void
   activeButton: number
 }
@@ -20,6 +21,7 @@ const buttonList: [string, number][] = [
 ]
 
 export default function GraphIntervalButtonGroup({
+  latestParams,
   fetchData,
   activeButton,
 }: GraphIntervalButtonGroupProps) {
@@ -29,7 +31,7 @@ export default function GraphIntervalButtonGroup({
         key={index}
         className={`btn ${index === activeButton ? 'btn-active' : ''}`}
         onClick={() => {
-          fetchData({ relative: true, interval, index })
+          fetchData({ ...latestParams, relative: true, interval, index })
         }}>
         {label}
       </button>

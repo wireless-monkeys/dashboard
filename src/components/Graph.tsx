@@ -7,6 +7,7 @@ import { IoRefresh } from 'react-icons/io5'
 import { Timestamp } from '../generated/google/protobuf/timestamp'
 import GraphIntervalButtonGroup from './GraphIntervalButtonGroup'
 import { client } from '../client'
+import { GraphAggregateIntervalDropdown } from './GraphAggregateIntervalDropdown'
 
 interface ChartData {
   timestamp: Number
@@ -17,11 +18,13 @@ type fetchDataParamsRelative = {
   relative: true
   interval: number
   index: number
+  aggregateInterval: number
 }
 type fetchDataParamsAbsolute = {
   relative: false
   startTime: Date
   endTime: Date
+  aggregateInterval: number
 }
 export type fetchDataParams = fetchDataParamsRelative | fetchDataParamsAbsolute
 
@@ -37,6 +40,7 @@ function Graph() {
     relative: true,
     interval: 60 * 60 * 1000,
     index: 0,
+    aggregateInterval: 1,
   })
 
   useEffect(() => {
@@ -93,7 +97,12 @@ function Graph() {
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-row gap-2 self-end">
+        <GraphAggregateIntervalDropdown
+          latestParams={latestParams}
+          fetchData={fetchData}
+        />
         <GraphIntervalButtonGroup
+          latestParams={latestParams}
           fetchData={fetchData}
           activeButton={activeButton}
         />
