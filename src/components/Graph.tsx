@@ -1,5 +1,5 @@
 import { GetNumberOfPeopleRequest } from '../generated/dashboard-service'
-import { formatRFC7231, formatISO9075 } from 'date-fns'
+import { formatISO9075, format } from 'date-fns'
 import { LineChart, XAxis, YAxis, Tooltip, Legend, Line } from 'recharts'
 import { useEffect, useState } from 'react'
 import { ImSpinner2 } from 'react-icons/im'
@@ -162,7 +162,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return (
       <div className="card bg-base-100">
         <div className="card-body items-center text-center">
-          <p>{formatRFC7231(datetime)}</p>
+          <p>{format(datetime, 'eee, PPp')}</p>
           <p className="text-primary">{`People: ${numberOfPeople}`}</p>
         </div>
       </div>
