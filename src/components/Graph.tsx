@@ -108,6 +108,7 @@ function Graph() {
         />
         <button
           className="btn"
+          aria-label="refresh"
           onClick={() => {
             fetchData(latestParams)
           }}>
