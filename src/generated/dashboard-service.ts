@@ -65,6 +65,10 @@ export interface CameraResponse {
      * @generated from protobuf field: bytes image = 2;
      */
     image: Uint8Array;
+    /**
+     * @generated from protobuf field: int64 number_of_people = 3;
+     */
+    numberOfPeople: bigint;
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class GetNumberOfPeopleRequest$Type extends MessageType<GetNumberOfPeopleRequest> {
@@ -233,11 +237,12 @@ class CameraResponse$Type extends MessageType<CameraResponse> {
     constructor() {
         super("api.CameraResponse", [
             { no: 1, name: "timestamp", kind: "message", T: () => Timestamp },
-            { no: 2, name: "image", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+            { no: 2, name: "image", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
+            { no: 3, name: "number_of_people", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
         ]);
     }
     create(value?: PartialMessage<CameraResponse>): CameraResponse {
-        const message = { image: new Uint8Array(0) };
+        const message = { image: new Uint8Array(0), numberOfPeople: 0n };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<CameraResponse>(this, message, value);
@@ -253,6 +258,9 @@ class CameraResponse$Type extends MessageType<CameraResponse> {
                     break;
                 case /* bytes image */ 2:
                     message.image = reader.bytes();
+                    break;
+                case /* int64 number_of_people */ 3:
+                    message.numberOfPeople = reader.int64().toBigInt();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -272,6 +280,9 @@ class CameraResponse$Type extends MessageType<CameraResponse> {
         /* bytes image = 2; */
         if (message.image.length)
             writer.tag(2, WireType.LengthDelimited).bytes(message.image);
+        /* int64 number_of_people = 3; */
+        if (message.numberOfPeople !== 0n)
+            writer.tag(3, WireType.Varint).int64(message.numberOfPeople);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
