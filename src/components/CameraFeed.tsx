@@ -36,7 +36,7 @@ export function CameraFeed() {
       if (response?.image) {
         setImageBlob(new Blob([response.image]))
       }
-      if (response?.numberOfPeople) {
+      if (response?.numberOfPeople !== undefined) {
         setNumberOfPeople(Number(response.numberOfPeople))
       }
     })
