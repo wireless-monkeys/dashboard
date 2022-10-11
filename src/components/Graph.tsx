@@ -164,7 +164,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
       <div className="card bg-base-100">
         <div className="card-body items-center text-center">
           <p>{format(datetime, 'eee, PPp')}</p>
-          <p className="text-primary">{`People: ${numberOfPeople}`}</p>
+          <p>{`People: ${numberOfPeople}`}</p>
         </div>
       </div>
     )
