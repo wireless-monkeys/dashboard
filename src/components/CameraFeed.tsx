@@ -23,6 +23,7 @@ function useBlobUrl(blob: Blob | null): string | null {
 
 export function CameraFeed() {
   const [imageBlob, setImageBlob] = useState<Blob | null>(null)
+  const [numberOfPeople, setNumberOfPeople] = useState<number>(0)
   const imageUrl = useBlobUrl(imageBlob)
 
   useEffect(() => {
@@ -35,6 +36,9 @@ export function CameraFeed() {
       if (response?.image) {
         setImageBlob(new Blob([response.image]))
       }
+      if (response?.numberOfPeople) {
+        setNumberOfPeople(Number(response.numberOfPeople))
+      }
     })
     return () => {
       controller.abort()
@@ -45,6 +49,7 @@ export function CameraFeed() {
     <div className="flex flex-col items-center gap-10 p-10">
       <h1 className="text-3xl font-bold">Camera Feed</h1>
       <img alt="Camera feed" src={imageUrl ? imageUrl : undefined} />
+      <h1 className="text-2xl font-bold">Number Of People: {numberOfPeople}</h1>
     </div>
   )
 }
